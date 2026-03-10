@@ -174,9 +174,9 @@
       background:#ef4444;
       color:#3a0000;
       transition:
-        left 0.08s linear,
-        top 0.08s linear,
-        transform 0.10s ease-out;
+        left 0.02s linear,
+        top 0.02s linear,
+        transform 0.04s ease-out;
       will-change: left, top, transform;
     }
 
@@ -315,11 +315,11 @@
       const dy = by - pointY;
       const dist = Math.hypot(dx, dy);
 
-      const trigger = 260;
+      const trigger = 400;
       if (dist >= trigger) return;
 
       const ratio = (trigger - dist) / trigger;
-      const baseStrength = 140 + ratio * 260;
+      const baseStrength = 180 + ratio * 320;
 
       let angle = Math.atan2(dy, dx);
 
@@ -477,3 +477,4 @@
   </script>
 </body>
 </html>
+
