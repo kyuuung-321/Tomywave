@@ -436,16 +436,6 @@
       fleeFrom(ev.clientX, ev.clientY);
     });
 
-    window.addEventListener("touchmove", (ev) => {
-      const p = getTouchPoint(ev);
-      if (!p) return;
-      fleeFrom(p.x, p.y);
-    }, { passive: true });
-
-    window.addEventListener("pointermove", (ev) => {
-      fleeFrom(ev.clientX, ev.clientY);
-    });
-
     noBtn.addEventListener("click", (ev) => {
       ev.preventDefault();
       ev.stopPropagation();
@@ -477,6 +467,7 @@
   </script>
 </body>
 </html>
+
 
 
 
