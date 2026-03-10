@@ -114,7 +114,7 @@
 
   <div class="wrap">
     <div class="card">
-      <h1>나랑 평생 함께할래? ❤️</h1>
+      <h1>몬얼뚱의 사랑을 받으시겠습니까? ❤️</h1>
       <p>아래에서 선택해줘 :)</p>
 
       <div id="arena">
@@ -137,89 +137,7 @@
 
     // arena 내부 기준으로 버튼 위치 설정 (px)
     function setPos(btn, left, top){
-      btn.style.left = `${left}px`;
-      btn.style.top  = `${top}px`;
-    }
-
-    // 초기 배치: 가운데 정렬 느낌
-    function initPositions(){
-      const a = arena.getBoundingClientRect();
-      const pad = 10;
-
-      const yesLeft = Math.round(a.width/2 - yesBtn.offsetWidth - 8);
-      const noLeft  = Math.round(a.width/2 + 8);
-      const top     = Math.round(a.height - noBtn.offsetHeight - pad - 22);
-
-      setPos(yesBtn, clamp(yesLeft, pad, a.width - yesBtn.offsetWidth - pad), top);
-      setPos(noBtn,  clamp(noLeft,  pad, a.width - noBtn.offsetWidth  - pad), top);
-    }
-
-    // 터치 포인트를 화면 좌표로 얻기
-    function getTouchPoint(ev){
-      const t = (ev.touches && ev.touches[0]) || (ev.changedTouches && ev.changedTouches[0]);
-      if(!t) return null;
-      return { x: t.clientX, y: t.clientY };
-    }
-
-    // 가까울수록 더 멀리 도망(점점 멀리)
-    function fleeFrom(pointX, pointY){
-      const a = arena.getBoundingClientRect();
-      const b = noBtn.getBoundingClientRect();
-
-      // 버튼 중심
-      const bx = b.left + b.width/2;
-      const by = b.top  + b.height/2;
-
-      const dx = bx - pointX;
-      const dy = by - pointY;
-      const dist = Math.hypot(dx, dy);
-
-      // 이 거리 안으로 들어오면 반응
-      const trigger = 180;
-
-      if(dist >= trigger) return;
-
-      // dist가 작을수록 strength가 커짐 (점점 멀리)
-      const strength = (trigger - dist) * 1.2 + 40;  // 기본 + 가속
-      const len = Math.hypot(dx, dy) || 1;
-
-      const vx = (dx / len) * strength;
-      const vy = (dy / len) * strength;
-
-      // arena 내부 좌표계로 이동 (현재 위치: offsetLeft/Top)
-      let newLeft = noBtn.offsetLeft + vx;
-      let newTop  = noBtn.offsetTop  + vy;
-
-      // 경계 제한 (arena 안에서만)
-      const pad = 8;
-      const maxLeft = a.width  - noBtn.offsetWidth  - pad;
-      const maxTop  = a.height - noBtn.offsetHeight - pad;
-
-      newLeft = clamp(newLeft, pad, maxLeft);
-      newTop  = clamp(newTop,  pad, maxTop);
-
-      setPos(noBtn, newLeft, newTop);
-    }
-
-    // ✅ 모바일 핵심: No를 누르려 하면(터치 시작) 즉시 도망
-    noBtn.addEventListener("touchstart", (ev) => {
-      const p = getTouchPoint(ev);
-      if(!p) return;
-      fleeFrom(p.x, p.y);
-    }, { passive: true });
-
-    // 손가락이 No 주변으로 접근해도 도망(터치 이동)
-    window.addEventListener("touchmove", (ev) => {
-      const p = getTouchPoint(ev);
-      if(!p) return;
-      fleeFrom(p.x, p.y);
-    }, { passive: true });
-
-    // (보너스) 데스크톱에서도 작동하게 하고 싶으면:
-    // window.addEventListener("mousemove", (e)=>fleeFrom(e.clientX, e.clientY));
-
-    yesBtn.addEventListener("click", () => {
-      msg.textContent = "주현아 언제나 사랑해❤️\n행복한 시간 보내자❤️❤️";
+      btn.style.left = `${le쭈 언제나 사랑해❤️\n행복한 시간 보내자❤️❤️";
     });
 
     // 초기화
@@ -227,4 +145,5 @@
     window.addEventListener("resize", initPositions);
   </script>
 </body>
+
 </html>
