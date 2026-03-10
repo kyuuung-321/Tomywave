@@ -174,9 +174,9 @@
       background:#ef4444;
       color:#3a0000;
       transition:
-        left 0.02s linear,
-        top 0.02s linear,
-        transform 0.04s ease-out;
+        left 0.0025s linear,
+        top 0.0025s linear,
+        transform 0.005s ease-out;
       will-change: left, top, transform;
     }
 
@@ -315,7 +315,7 @@
       const dy = by - pointY;
       const dist = Math.hypot(dx, dy);
 
-      const trigger = 400;
+      const trigger =800;
       if (dist >= trigger) return;
 
       const ratio = (trigger - dist) / trigger;
@@ -477,4 +477,5 @@
   </script>
 </body>
 </html>
+
 
