@@ -11,6 +11,7 @@
     }
 
     html, body { height: 100%; }
+
     body{
       margin:0;
       overflow:hidden;
@@ -18,69 +19,140 @@
       background:url("background.jpg") center/cover no-repeat fixed;
       color:#fff;
       -webkit-tap-highlight-color: transparent;
-      touch-action: none; /* 화면 스크롤 방지(이 페이지 안에서) */
+      touch-action: none;
     }
 
     .overlay{
       position:fixed;
       inset:0;
-      background: rgba(0,0,0,0.45);
+      background: rgba(0,0,0,0.35);
+      pointer-events: none;
     }
 
     .wrap{
       position:relative;
-      z-index:1;
+      z-index:2;
       height:100%;
       display:flex;
       align-items:center;
       justify-content:center;
-      padding: 22px;
+      padding:22px;
       text-align:center;
     }
 
     .card{
       width:min(520px, 92vw);
-      border-radius: 18px;
-      padding: 26px 18px 18px;
-      background: rgba(0,0,0,0.30);
-      border: 1px solid rgba(255,255,255,0.18);
-      backdrop-filter: blur(6px);
-      box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+      border-radius:18px;
+      padding:26px 18px 18px;
+      background: rgba(0,0,0,0.18);
+      border: 1px solid rgba(255,255,255,0.16);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.25);
     }
 
     h1{
       margin:0 0 10px;
-      font-size: 22px;
-      line-height: 1.25;
-      letter-spacing: -0.2px;
+      font-size:22px;
+      line-height:1.25;
+      letter-spacing:-0.2px;
     }
 
     p{
-      margin:0 0 18px;
-      opacity:0.92;
+      margin:0 0 14px;
+      opacity:0.95;
       line-height:1.5;
-      font-size: 15px;
+      font-size:15px;
     }
 
-    /* 버튼이 움직일 “경기장” */
+    .top-message{
+      min-height: 30px;
+      margin-bottom: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffd6de;
+      line-height: 1.4;
+      opacity: 1;
+      transform-origin: center;
+    }
+
+  
+    .top-message.shake{
+      animation: shakePop 0.7s ease;
+    }
+
+    .top-message .cry{
+      display:inline-block;
+      margin-left: 4px;
+    }
+
+    .top-message.shake .cry{
+      animation: emojiPulse 0.7s ease;
+    }
+
+    @keyframes shakePop {
+      0% {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.94);
+      }
+      18% {
+        opacity: 1;
+        transform: translateY(0) scale(1.04) rotate(-3deg);
+      }
+      32% {
+        transform: translateY(0) scale(1.04) rotate(3deg);
+      }
+      46% {
+        transform: translateY(0) scale(1.03) rotate(-3deg);
+      }
+      60% {
+        transform: translateY(0) scale(1.02) rotate(2deg);
+      }
+      76% {
+        transform: translateY(0) scale(1.01) rotate(-1deg);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotate(0);
+      }
+    }
+
+    @keyframes emojiPulse {
+      0%   { transform: scale(0.9); }
+      25%  { transform: scale(1.28); }
+      55%  { transform: scale(1.12); }
+      100% { transform: scale(1); }
+    }
+
+    .center-image{
+      width:140px;
+      height:140px;
+      margin:0 auto 18px;
+      display:block;
+      object-fit:cover;
+      border-radius:16px;
+      box-shadow:0 8px 24px rgba(0,0,0,0.22);
+      border:1px solid rgba(255,255,255,0.25);
+    }
+
     #arena{
-      position: relative;
-      width: 100%;
-      height: 240px;
-      border-radius: 16px;
+      position:relative;
+      width:100%;
+      height:240px;
+      border-radius:16px;
     }
 
     button{
-      width: var(--btn-w);
-      height: var(--btn-h);
+      width:var(--btn-w);
+      height:var(--btn-h);
       border:0;
-      border-radius: 999px;
-      font-size: 17px;
-      font-weight: 800;
-      cursor: pointer;
+      border-radius:999px;
+      font-size:17px;
+      font-weight:800;
       user-select:none;
       -webkit-user-select:none;
       position:absolute;
+      cursor:pointer;
     }
 
     #yes{
@@ -88,34 +160,67 @@
       color:#062d13;
     }
 
+    #yes.pop{
+      animation: yesPop 0.35s ease;
+    }
+
+    @keyframes yesPop{
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
     #no{
       background:#ef4444;
       color:#3a0000;
+      transition:
+        left 0.18s ease-out,
+        top 0.18s ease-out,
+        transform 0.18s ease-out;
+    }
+
+    #no.escape{
+      transform: scale(1.08);
     }
 
     .msg{
-      margin-top: 14px;
-      min-height: 54px;
-      font-size: 20px;
-      font-weight: 800;
-      line-height: 1.35;
-      white-space: pre-line;
+      margin-top:14px;
+      min-height:54px;
+      font-size:20px;
+      font-weight:800;
+      line-height:1.35;
+      white-space:pre-line;
     }
 
     .small{
-      font-size: 12px;
-      opacity: 0.75;
-      margin-top: 10px;
+      font-size:12px;
+      opacity:0.78;
+      margin-top:10px;
+    }
+
+    /* 폭죽 캔버스 */
+    #confetti{
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 3;
     }
   </style>
 </head>
 <body>
+  <canvas id="confetti"></canvas>
   <div class="overlay"></div>
 
   <div class="wrap">
     <div class="card">
-      <h1>몬얼뚱의 사랑을 받으시겠습니까? ❤️</h1>
-      <p>아래에서 선택해줘 :)</p>
+      <h1>몬얼뚱의 사랑을 받으시겠습니까? ❤️❤️</h1>
+      <p>받아라!!!!</p>
+
+      <div class="top-message" id="topMessage"></div>
+
+      <img src="center.jpg" alt="center image" class="center-image">
 
       <div id="arena">
         <button id="yes" type="button">Yes</button>
@@ -123,7 +228,7 @@
       </div>
 
       <div class="msg" id="msg"></div>
-      <div class="small">※ No는… 잡을 수 없을지도?</div>
+      <div class="small">거절은 거절합니다.</div>
     </div>
   </div>
 
@@ -132,18 +237,213 @@
     const yesBtn = document.getElementById("yes");
     const noBtn = document.getElementById("no");
     const msg = document.getElementById("msg");
+    const topMessage = document.getElementById("topMessage");
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
 
-    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+    let confettiPieces = [];
+    let animationId = null;
 
-    // arena 내부 기준으로 버튼 위치 설정 (px)
+    function resizeCanvas(){
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function clamp(n, min, max){
+      return Math.max(min, Math.min(max, n));
+    }
+
     function setPos(btn, left, top){
-      btn.style.left = `${le쭈 언제나 사랑해❤️\n행복한 시간 보내자❤️❤️";
+      btn.style.left = `${left}px`;
+      btn.style.top = `${top}px`;
+    }
+
+    function initPositions(){
+      const a = arena.getBoundingClientRect();
+      const pad = 10;
+
+      const yesLeft = Math.round(a.width / 2 - yesBtn.offsetWidth - 8);
+      const noLeft = Math.round(a.width / 2 + 8);
+      const top = Math.round(a.height - noBtn.offsetHeight - pad - 22);
+
+      setPos(
+        yesBtn,
+        clamp(yesLeft, pad, a.width - yesBtn.offsetWidth - pad),
+        top
+      );
+
+      setPos(
+        noBtn,
+        clamp(noLeft, pad, a.width - noBtn.offsetWidth - pad),
+        top
+      );
+    }
+
+    function getTouchPoint(ev){
+      const t = (ev.touches && ev.touches[0]) || (ev.changedTouches && ev.changedTouches[0]);
+      if(!t) return null;
+      return { x: t.clientX, y: t.clientY };
+    }
+
+    function playEscapeMotion(){
+      noBtn.classList.add("escape");
+      clearTimeout(noBtn._escapeTimer);
+      noBtn._escapeTimer = setTimeout(() => {
+        noBtn.classList.remove("escape");
+      }, 180);
+    }
+
+    function playTopMessageShake(){
+      topMessage.innerHTML = '진짜 눌렀어..?<br>핸드폰 말고 다른 걸로 들어갔지..??<span class="cry">😿</span>';
+
+      topMessage.classList.remove("shake");
+      void topMessage.offsetWidth;
+      topMessage.classList.add("shake");
+    }
+
+    function fleeFrom(pointX, pointY){
+      const a = arena.getBoundingClientRect();
+      const b = noBtn.getBoundingClientRect();
+
+      const bx = b.left + b.width / 2;
+      const by = b.top + b.height / 2;
+
+      const dx = bx - pointX;
+      const dy = by - pointY;
+      const dist = Math.hypot(dx, dy);
+
+      const trigger = 180;
+      if(dist >= trigger) return;
+
+      const strength = (trigger - dist) * 1.35 + 60;
+      const len = Math.hypot(dx, dy) || 1;
+
+      const vx = (dx / len) * strength;
+      const vy = (dy / len) * strength;
+
+      let newLeft = noBtn.offsetLeft + vx;
+      let newTop = noBtn.offsetTop + vy;
+
+      const pad = 8;
+      const maxLeft = a.width - noBtn.offsetWidth - pad;
+      const maxTop = a.height - noBtn.offsetHeight - pad;
+
+      newLeft = clamp(newLeft, pad, maxLeft);
+      newTop = clamp(newTop, pad, maxTop);
+
+      setPos(noBtn, newLeft, newTop);
+      playEscapeMotion();
+    }
+
+    function vibrateShort(){
+      if (navigator.vibrate) {
+        navigator.vibrate(120);
+      }
+    }
+
+    function yesButtonPop(){
+      yesBtn.classList.remove("pop");
+      void yesBtn.offsetWidth;
+      yesBtn.classList.add("pop");
+    }
+
+    function launchConfetti(){
+      confettiPieces = [];
+      const count = 140;
+      const originX = window.innerWidth / 2;
+      const originY = window.innerHeight * 0.35;
+
+      for(let i = 0; i < count; i++){
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2 + Math.random() * 7;
+
+        confettiPieces.push({
+          x: originX,
+          y: originY,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 2,
+          size: 4 + Math.random() * 6,
+          rotation: Math.random() * Math.PI,
+          rotationSpeed: (Math.random() - 0.5) * 0.3,
+          gravity: 0.12 + Math.random() * 0.08,
+          alpha: 1,
+          drag: 0.992,
+          color: `hsl(${Math.random() * 360}, 90%, 65%)`
+        });
+      }
+
+      if(animationId) cancelAnimationFrame(animationId);
+      animateConfetti();
+    }
+
+    function animateConfetti(){
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      confettiPieces.forEach(p => {
+        p.vx *= p.drag;
+        p.vy = p.vy * p.drag + p.gravity;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rotation += p.rotationSpeed;
+        p.alpha -= 0.008;
+
+        ctx.save();
+        ctx.globalAlpha = Math.max(p.alpha, 0);
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.65);
+        ctx.restore();
+      });
+
+      confettiPieces = confettiPieces.filter(p => p.alpha > 0 && p.y < window.innerHeight + 40);
+
+      if(confettiPieces.length > 0){
+        animationId = requestAnimationFrame(animateConfetti);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        animationId = null;
+      }
+    }
+
+    noBtn.addEventListener("touchstart", (ev) => {
+      const p = getTouchPoint(ev);
+      if(!p) return;
+      fleeFrom(p.x, p.y);
+    }, { passive: true });
+
+    window.addEventListener("touchmove", (ev) => {
+      const p = getTouchPoint(ev);
+      if(!p) return;
+      fleeFrom(p.x, p.y);
+    }, { passive: true });
+
+    noBtn.addEventListener("click", () => {
+      playTopMessageShake();
+      msg.textContent = "";
     });
 
-    // 초기화
-    window.addEventListener("load", initPositions);
-    window.addEventListener("resize", initPositions);
+    yesBtn.addEventListener("click", () => {
+      topMessage.textContent = "";
+      msg.textContent = "주현아 언제나 사랑해❤️\n행복한 시간 보내자❤️❤️";
+      vibrateShort();
+      yesButtonPop();
+      launchConfetti();
+    });
+
+    window.addEventListener("load", () => {
+      resizeCanvas();
+      initPositions();
+    });
+
+    window.addEventListener("resize", () => {
+      resizeCanvas();
+      initPositions();
+    });
   </script>
 </body>
-
 </html>
