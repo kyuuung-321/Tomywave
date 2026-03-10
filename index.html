@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>For You ❤️</title>
+  <style>
+    :root{
+      --btn-w: 138px;
+      --btn-h: 54px;
+    }
+
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      overflow:hidden;
+      font-family: system-ui, -apple-system, "Noto Sans KR", Segoe UI, Roboto, sans-serif;
+      background:url("background.jpg") center/cover no-repeat fixed;
+      color:#fff;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: none; /* 화면 스크롤 방지(이 페이지 안에서) */
+    }
+
+    .overlay{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,0.45);
+    }
+
+    .wrap{
+      position:relative;
+      z-index:1;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 22px;
+      text-align:center;
+    }
+
+    .card{
+      width:min(520px, 92vw);
+      border-radius: 18px;
+      padding: 26px 18px 18px;
+      background: rgba(0,0,0,0.30);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+    }
+
+    h1{
+      margin:0 0 10px;
+      font-size: 22px;
+      line-height: 1.25;
+      letter-spacing: -0.2px;
+    }
+
+    p{
+      margin:0 0 18px;
+      opacity:0.92;
+      line-height:1.5;
+      font-size: 15px;
+    }
+
+    /* 버튼이 움직일 “경기장” */
+    #arena{
+      position: relative;
+      width: 100%;
+      height: 240px;
+      border-radius: 16px;
+    }
+
+    button{
+      width: var(--btn-w);
+      height: var(--btn-h);
+      border:0;
+      border-radius: 999px;
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+      user-select:none;
+      -webkit-user-select:none;
+      position:absolute;
+    }
+
+    #yes{
+      background:#22c55e;
+      color:#062d13;
+    }
+
+    #no{
+      background:#ef4444;
+      color:#3a0000;
+    }
+
+    .msg{
+      margin-top: 14px;
+      min-height: 54px;
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1.35;
+      white-space: pre-line;
+    }
+
+    .small{
+      font-size: 12px;
+      opacity: 0.75;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+
+  <div class="wrap">
+    <div class="card">
+      <h1>나랑 평생 함께할래? ❤️</h1>
+      <p>아래에서 선택해줘 :)</p>
+
+      <div id="arena">
+        <button id="yes" type="button">Yes</button>
+        <button id="no" type="button">No</button>
+      </div>
+
+      <div class="msg" id="msg"></div>
+      <div class="small">※ No는… 잡을 수 없을지도?</div>
+    </div>
+  </div>
+
+  <script>
+    const arena = document.getElementById("arena");
+    const yesBtn = document.getElementById("yes");
+    const noBtn = document.getElementById("no");
+    const msg = document.getElementById("msg");
+
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+    // arena 내부 기준으로 버튼 위치 설정 (px)
+    function setPos(btn, left, top){
+      btn.style.left = `${left}px`;
+      btn.style.top  = `${top}px`;
+    }
+
+    // 초기 배치: 가운데 정렬 느낌
+    function initPositions(){
+      const a = arena.getBoundingClientRect();
+      const pad = 10;
+
+      const yesLeft = Math.round(a.width/2 - yesBtn.offsetWidth - 8);
+      const noLeft  = Math.round(a.width/2 + 8);
+      const top     = Math.round(a.height - noBtn.offsetHeight - pad - 22);
+
+      setPos(yesBtn, clamp(yesLeft, pad, a.width - yesBtn.offsetWidth - pad), top);
+      setPos(noBtn,  clamp(noLeft,  pad, a.width - noBtn.offsetWidth  - pad), top);
+    }
+
+    // 터치 포인트를 화면 좌표로 얻기
+    function getTouchPoint(ev){
+      const t = (ev.touches && ev.touches[0]) || (ev.changedTouches && ev.changedTouches[0]);
+      if(!t) return null;
+      return { x: t.clientX, y: t.clientY };
+    }
+
+    // 가까울수록 더 멀리 도망(점점 멀리)
+    function fleeFrom(pointX, pointY){
+      const a = arena.getBoundingClientRect();
+      const b = noBtn.getBoundingClientRect();
+
+      // 버튼 중심
+      const bx = b.left + b.width/2;
+      const by = b.top  + b.height/2;
+
+      const dx = bx - pointX;
+      const dy = by - pointY;
+      const dist = Math.hypot(dx, dy);
+
+      // 이 거리 안으로 들어오면 반응
+      const trigger = 180;
+
+      if(dist >= trigger) return;
+
+      // dist가 작을수록 strength가 커짐 (점점 멀리)
+      const strength = (trigger - dist) * 1.2 + 40;  // 기본 + 가속
+      const len = Math.hypot(dx, dy) || 1;
+
+      const vx = (dx / len) * strength;
+      const vy = (dy / len) * strength;
+
+      // arena 내부 좌표계로 이동 (현재 위치: offsetLeft/Top)
+      let newLeft = noBtn.offsetLeft + vx;
+      let newTop  = noBtn.offsetTop  + vy;
+
+      // 경계 제한 (arena 안에서만)
+      const pad = 8;
+      const maxLeft = a.width  - noBtn.offsetWidth  - pad;
+      const maxTop  = a.height - noBtn.offsetHeight - pad;
+
+      newLeft = clamp(newLeft, pad, maxLeft);
+      newTop  = clamp(newTop,  pad, maxTop);
+
+      setPos(noBtn, newLeft, newTop);
+    }
+
+    // ✅ 모바일 핵심: No를 누르려 하면(터치 시작) 즉시 도망
+    noBtn.addEventListener("touchstart", (ev) => {
+      const p = getTouchPoint(ev);
+      if(!p) return;
+      fleeFrom(p.x, p.y);
+    }, { passive: true });
+
+    // 손가락이 No 주변으로 접근해도 도망(터치 이동)
+    window.addEventListener("touchmove", (ev) => {
+      const p = getTouchPoint(ev);
+      if(!p) return;
+      fleeFrom(p.x, p.y);
+    }, { passive: true });
+
+    // (보너스) 데스크톱에서도 작동하게 하고 싶으면:
+    // window.addEventListener("mousemove", (e)=>fleeFrom(e.clientX, e.clientY));
+
+    yesBtn.addEventListener("click", () => {
+      msg.textContent = "주현아 언제나 사랑해❤️\n행복한 시간 보내자❤️❤️";
+    });
+
+    // 초기화
+    window.addEventListener("load", initPositions);
+    window.addEventListener("resize", initPositions);
+  </script>
+</body>
+</html>
