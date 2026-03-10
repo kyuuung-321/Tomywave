@@ -298,7 +298,7 @@
     }
 
     function playTopMessageShake(){
-      topMessage.innerHTML = '진짜 눌렀어..?<br>핸드폰 말고 다른 걸로 들어갔지..??<span class="cry">😿</span>';
+      topMessage.innerHTML = '진짜 눌렀어..?<br>안 받으려구..??<span class="cry">😿</span>';
       topMessage.classList.remove("shake");
       void topMessage.offsetWidth;
       topMessage.classList.add("shake");
@@ -315,18 +315,18 @@
       const dy = by - pointY;
       const dist = Math.hypot(dx, dy);
 
-      const trigger =800;
+      const trigger = 1600;
       if (dist >= trigger) return;
 
       const ratio = (trigger - dist) / trigger;
-      const baseStrength = 180 + ratio * 320;
+      const baseStrength = 380 + ratio * 900;
 
       let angle = Math.atan2(dy, dx);
 
-      if (dist < 90) {
-        angle += (Math.random() - 0.5) * 1.4;
+      if (dist < 240) {
+        angle += (Math.random() - 0.5) * 4.0;
       } else {
-        angle += (Math.random() - 0.5) * 0.9;
+        angle += (Math.random() - 0.5) * 3.0;
       }
 
       const vx = Math.cos(angle) * baseStrength;
@@ -477,5 +477,6 @@
   </script>
 </body>
 </html>
+
 
 
