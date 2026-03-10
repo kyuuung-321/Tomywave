@@ -76,7 +76,6 @@
       transform-origin: center;
     }
 
-  
     .top-message.shake{
       animation: shakePop 0.7s ease;
     }
@@ -140,6 +139,7 @@
       width:100%;
       height:240px;
       border-radius:16px;
+      overflow:hidden;
     }
 
     button{
@@ -170,14 +170,15 @@
       100% { transform: scale(1); }
     }
 
-  #no{
-    background:#ef4444;
-    color:#3a0000;
-    transition:
-      left 0.08s linear,
-      top 0.08s linear,
-      transform 0.10s ease-out;
-  }
+    #no{
+      background:#ef4444;
+      color:#3a0000;
+      transition:
+        left 0.08s linear,
+        top 0.08s linear,
+        transform 0.10s ease-out;
+      will-change: left, top, transform;
+    }
 
     #no.escape{
       transform: scale(1.08);
@@ -198,7 +199,6 @@
       margin-top:10px;
     }
 
-    /* 폭죽 캔버스 */
     #confetti{
       position: fixed;
       inset: 0;
@@ -294,12 +294,11 @@
       clearTimeout(noBtn._escapeTimer);
       noBtn._escapeTimer = setTimeout(() => {
         noBtn.classList.remove("escape");
-      }, 180);
+      }, 120);
     }
 
     function playTopMessageShake(){
       topMessage.innerHTML = '진짜 눌렀어..?<br>핸드폰 말고 다른 걸로 들어갔지..??<span class="cry">😿</span>';
-
       topMessage.classList.remove("shake");
       void topMessage.offsetWidth;
       topMessage.classList.add("shake");
@@ -316,24 +315,41 @@
       const dy = by - pointY;
       const dist = Math.hypot(dx, dy);
 
-      const trigger = 180;
-      if(dist >= trigger) return;
+      const trigger = 260;
+      if (dist >= trigger) return;
 
-      const strength = (trigger - dist) * 1.35 + 60;
-      const len = Math.hypot(dx, dy) || 1;
+      const ratio = (trigger - dist) / trigger;
+      const baseStrength = 140 + ratio * 260;
 
-      const vx = (dx / len) * strength;
-      const vy = (dy / len) * strength;
+      let angle = Math.atan2(dy, dx);
+
+      if (dist < 90) {
+        angle += (Math.random() - 0.5) * 1.4;
+      } else {
+        angle += (Math.random() - 0.5) * 0.9;
+      }
+
+      const vx = Math.cos(angle) * baseStrength;
+      const vy = Math.sin(angle) * baseStrength;
 
       let newLeft = noBtn.offsetLeft + vx;
       let newTop = noBtn.offsetTop + vy;
 
-      const pad = 8;
+      const pad = 6;
       const maxLeft = a.width - noBtn.offsetWidth - pad;
       const maxTop = a.height - noBtn.offsetHeight - pad;
 
-      newLeft = clamp(newLeft, pad, maxLeft);
-      newTop = clamp(newTop, pad, maxTop);
+      if (newLeft < pad || newLeft > maxLeft) {
+        newLeft = Math.random() * (maxLeft - pad) + pad;
+      } else {
+        newLeft = clamp(newLeft, pad, maxLeft);
+      }
+
+      if (newTop < pad || newTop > maxTop) {
+        newTop = Math.random() * (maxTop - pad) + pad;
+      } else {
+        newTop = clamp(newTop, pad, maxTop);
+      }
 
       setPos(noBtn, newLeft, newTop);
       playEscapeMotion();
@@ -412,18 +428,32 @@
 
     noBtn.addEventListener("touchstart", (ev) => {
       const p = getTouchPoint(ev);
-      if(!p) return;
+      if (!p) return;
       fleeFrom(p.x, p.y);
     }, { passive: true });
+
+    noBtn.addEventListener("pointerdown", (ev) => {
+      fleeFrom(ev.clientX, ev.clientY);
+    });
 
     window.addEventListener("touchmove", (ev) => {
       const p = getTouchPoint(ev);
-      if(!p) return;
+      if (!p) return;
       fleeFrom(p.x, p.y);
     }, { passive: true });
 
-    noBtn.addEventListener("click", () => {
+    window.addEventListener("pointermove", (ev) => {
+      fleeFrom(ev.clientX, ev.clientY);
+    });
+
+    noBtn.addEventListener("click", (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
       playTopMessageShake();
+
+      const rect = noBtn.getBoundingClientRect();
+      fleeFrom(rect.left + rect.width / 2, rect.top + rect.height / 2);
+
       msg.textContent = "";
     });
 
@@ -447,7 +477,3 @@
   </script>
 </body>
 </html>
-
-
-
-
